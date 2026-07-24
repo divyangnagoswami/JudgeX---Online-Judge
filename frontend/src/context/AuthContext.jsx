@@ -35,7 +35,12 @@ export const AuthProvider = ({
 
         setUser(userData);
       } catch (error) {
-        localStorage.removeItem("token");
+        // Only drop the session on a genuine auth failure (401 = invalid or
+        // expired token). A transient network/500 error must NOT log the user
+        // out — otherwise a momentary backend hiccup wipes their session.
+        if (error?.response?.status === 401) {
+          localStorage.removeItem("token");
+        }
       } finally {
         setLoading(false);
       }

@@ -2,7 +2,10 @@ import rateLimit from "express-rate-limit";
 
 export const generalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 100,
+    // High ceiling: the app does live polling (submissions/verdicts refresh
+    // every ~2s), so a single active user legitimately makes many requests.
+    // 100/15min throttled normal usage; 1000 still guards against abuse.
+    max: 1000,
     message: {
         success: false,
         message:

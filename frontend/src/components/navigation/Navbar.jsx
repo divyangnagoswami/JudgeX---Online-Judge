@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../context/AuthContext";
 
@@ -56,9 +56,14 @@ const Navbar = () => {
           />
         </form>
 
-        <div className="flex h-9 w-9 items-center justify-center rounded border border-amber/40 bg-amber/10 font-bold text-amber">
+        <Link
+          to="/profile"
+          title="Profile"
+          aria-label="Profile"
+          className="flex h-9 w-9 items-center justify-center rounded border border-amber/40 bg-amber/10 font-bold text-amber transition-colors hover:bg-amber/20"
+        >
           {initial}
-        </div>
+        </Link>
       </div>
     </header>
   );

@@ -1,0 +1,23 @@
+{
+  "name": "compiler",
+  "version": "1.0.0",
+  "description": "Online Judge code-execution / judge service. Consumes the submission queue, runs submissions in sandboxed Docker containers (C, C++, Java, Python, JavaScript), and writes verdicts.",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "license": "ISC",
+  "dependencies": {
+    "bullmq": "^5.80.5",
+    "dockerode": "^5.0.1",
+    "dotenv": "^17.4.2",
+    "ioredis": "^5.11.1",
+    "mongoose": "^9.7.3",
+    "uuid": "^14.0.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14"
+  }
+}

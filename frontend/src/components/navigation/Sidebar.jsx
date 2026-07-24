@@ -4,6 +4,7 @@ import {
   FileCode,
   Trophy,
   User,
+  Briefcase,
   TerminalSquare,
 } from "lucide-react";
 
@@ -25,6 +26,7 @@ const Sidebar = () => {
     { label: "problems", icon: Code2, path: "/problems" },
     { label: "submissions", icon: FileCode, path: "/submissions" },
     { label: "leaderboard", icon: Trophy, path: "/leaderboard" },
+    { label: "company prep", icon: Briefcase, path: "/company-prep" },
     { label: "profile", icon: User, path: "/profile" },
   ];
 

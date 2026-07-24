@@ -64,6 +64,7 @@ const submissionSchema = new mongoose.Schema(
             type: Number,
             default: 0,
         },
+
         aiAnalysis: {
             type: {
                 summary: String,
@@ -103,18 +104,6 @@ const submissionSchema = new mongoose.Schema(
         timestamps: true,
     }
 );
-
-// Leaderboard indexes
-
-submissionSchema.index({
-    verdict: 1,
-});
-
-submissionSchema.index({
-    user: 1,
-    problem: 1,
-    verdict: 1,
-});
 
 const Submission = mongoose.model(
     "Submission",

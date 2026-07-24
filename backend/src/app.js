@@ -19,7 +19,8 @@ import errorMiddleware from "./middleware/errorMiddleware.js";
 const app = express();
 
 app.use(cors());
-app.use(express.json());
+// Larger limit so problems can carry sizable test-case data (default is 100kb).
+app.use(express.json({ limit: "5mb" }));
 app.use(generalLimiter);
 
 app.get("/", (req, res) => {

@@ -11,6 +11,7 @@ import Submissions from "../../pages/Submissions";
 import Leaderboard from "../../pages/Leaderboard";
 import Profile from "../../pages/Profile";
 import SubmissionDetail from "../../pages/SubmissionDetail";
+import CompanyPrep from "../../pages/CompanyPrep";
 
 import ProtectedRoute from "./ProtectedRoute";
 
@@ -89,6 +90,15 @@ const AppRouter = () => {
           element={
             <ProtectedRoute>
               <Leaderboard />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/company-prep"
+          element={
+            <ProtectedRoute>
+              <CompanyPrep />
             </ProtectedRoute>
           }
         />

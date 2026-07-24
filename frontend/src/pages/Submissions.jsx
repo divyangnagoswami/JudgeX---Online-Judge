@@ -18,6 +18,13 @@ const Submissions = () => {
   } = useQuery({
     queryKey: ["mySubmissions"],
     queryFn: getMySubmissions,
+    // Live-update verdicts while any submission is still being judged —
+    // even if the tab is in the background.
+    refetchInterval: (query) =>
+      query.state.data?.some((s) => s.status !== "Completed")
+        ? 2500
+        : false,
+    refetchIntervalInBackground: true,
   });
 
   if (isLoading) {
