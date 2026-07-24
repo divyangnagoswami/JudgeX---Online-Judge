@@ -1,0 +1,37 @@
+import express from "express";
+
+import {
+    createProblem,
+    getProblems,
+    getProblemById,
+    updateProblem,
+    deleteProblem,
+    getProblemStats,
+} from "../controllers/problemController.js";
+
+import protect from "../middleware/authMiddleware.js";
+
+const router = express.Router();
+
+router.post("/", protect, createProblem);
+
+router.get("/", getProblems);
+
+router.get("/test", (req, res) => {
+    res.json({ message: "problem routes working" });
+});
+
+router.get(
+    "/:id/stats",
+    getProblemStats
+);
+
+router.get("/:id", getProblemById);
+
+router.put("/:id", protect, updateProblem);
+
+router.delete("/:id", protect, deleteProblem);
+
+console.log("Problem routes loaded");
+
+export default router;
