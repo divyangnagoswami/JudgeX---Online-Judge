@@ -5,7 +5,13 @@ import { v4 as uuidv4 } from "uuid";
 import docker from "../config/docker.js";
 import { languageConfig } from "./languageConfig.js";
 
-const tempDir = path.join(process.cwd(), "temp");
+// JUDGE_TEMP_DIR matters when the compiler itself runs inside a container
+// (Docker Compose): it must be a HOST path that is ALSO bind-mounted into the
+// compiler container at the SAME path, so the sibling judge containers we create
+// via the host Docker socket can mount each job folder correctly. Locally it
+// falls back to ./temp, so nothing changes for `npm run dev`.
+const tempDir =
+    process.env.JUDGE_TEMP_DIR || path.join(process.cwd(), "temp");
 
 if (!fs.existsSync(tempDir)) {
     fs.mkdirSync(tempDir, { recursive: true });

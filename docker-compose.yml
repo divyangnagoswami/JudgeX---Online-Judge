@@ -1,0 +1,90 @@
+# =============================================================================
+#  JudgeX - Docker Compose (single-host deployment, e.g. one EC2 instance)
+#
+#  Services:
+#    redis     - message queue backing store (internal only)
+#    backend   - Express API + AI worker (internal; reached via the frontend proxy)
+#    compiler  - judge worker; talks to the HOST Docker to run code in sandboxes
+#    frontend  - static React site + nginx that proxies /api -> backend (port 80)
+#
+#  BEFORE `docker compose up`, on the host:
+#    1) Create the two env files (they are git-ignored):
+#         backend/.env    -> MONGO_URI=...  JWT_SECRET=...  GEMINI_API_KEY=...
+#         compiler/.env   -> MONGO_URI=...
+#       (REDIS_HOST/REDIS_PORT/PORT/JUDGE_TEMP_DIR are set below, no need to add them.)
+#    2) Pre-pull the language images onto the HOST daemon (the compiler runs code
+#       in these via the mounted docker socket):
+#         docker pull gcc:14 python:3.12-slim node:20-slim eclipse-temurin:21-jdk
+#    3) In MongoDB Atlas, allow this server's IP (or 0.0.0.0/0).
+#
+#  Then:   docker compose up -d --build
+#  Open:   http://<server-ip>        (Swagger: /api-docs , queues: /admin/queues)
+# =============================================================================
+
+services:
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    networks:
+      - oj
+    # Not published to the internet - only other services on the "oj" network use it.
+
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      # Override so the backend finds Redis by its Compose service name.
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      PORT: 5000
+    depends_on:
+      - redis
+    networks:
+      - oj
+    # Not published - the frontend nginx proxies to it internally as http://backend:5000.
+
+  compiler:
+    build: ./compiler
+    restart: unless-stopped
+    env_file:
+      - ./compiler/.env
+    environment:
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      # Must equal the host path bind-mounted below, so sibling judge containers
+      # (created on the HOST daemon) can mount each job folder correctly.
+      JUDGE_TEMP_DIR: /judge-temp
+    volumes:
+      # Let the compiler drive the HOST Docker engine (Docker-out-of-Docker).
+      - /var/run/docker.sock:/var/run/docker.sock
+      # Same absolute path on host and in the container (the DooD "matching path" trick).
+      - /judge-temp:/judge-temp
+    depends_on:
+      - redis
+    networks:
+      - oj
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: /api
+    restart: unless-stopped
+    ports:
+      - "80:80"          # the only publicly exposed port
+    depends_on:
+      - backend
+    networks:
+      - oj
+
+volumes:
+  redis-data:
+
+networks:
+  oj:
+    driver: bridge
