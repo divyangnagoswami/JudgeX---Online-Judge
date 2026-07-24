@@ -23,8 +23,11 @@ const SubmissionDetail = () => {
     isLoading,
   } = useQuery({
     queryKey: ["submission", id],
-    queryFn: () =>
-      getSubmissionById(id),
+    queryFn: () => getSubmissionById(id),
+    // Keep refreshing until the judge finishes (even in the background).
+    refetchInterval: (query) =>
+      query.state.data?.status !== "Completed" ? 2000 : false,
+    refetchIntervalInBackground: true,
   });
 
   const {
@@ -34,8 +37,13 @@ const SubmissionDetail = () => {
       "submission-analysis",
       id,
     ],
-    queryFn: () =>
-      getSubmissionAnalysis(id),
+    queryFn: () => getSubmissionAnalysis(id),
+    // AI review runs after judging, so poll until it resolves.
+    refetchInterval: (query) => {
+      const status = query.state.data?.aiAnalysisStatus;
+      return status === "Completed" || status === "Failed" ? false : 2500;
+    },
+    refetchIntervalInBackground: true,
   });
 
   if (isLoading) {

@@ -10,6 +10,10 @@ const verdictMap = {
     code: "TLE",
     cls: "text-tle border-tle/30 bg-tle/10",
   },
+  "Internal Error": {
+    code: "IE",
+    cls: "text-ink-dim border-line-hi bg-raise",
+  },
   Pending: { code: "…", cls: "text-ink-dim border-line bg-raise" },
   Running: { code: "··", cls: "text-amber border-amber/30 bg-amber/10" },
 };

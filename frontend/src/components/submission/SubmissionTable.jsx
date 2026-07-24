@@ -35,7 +35,11 @@ const SubmissionsTable = ({ submissions }) => {
                 className="cursor-pointer border-b border-line transition-colors last:border-b-0 hover:bg-raise"
               >
                 <td className="px-6 py-4 font-medium text-ink">
-                  {submission.problem?.title}
+                  {submission.problem?.title || (
+                    <span className="text-ink-faint">
+                      (deleted problem)
+                    </span>
+                  )}
                 </td>
 
                 <td className="px-6 py-4 uppercase text-ink-dim">

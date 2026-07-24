@@ -145,6 +145,61 @@ const submissionPaths = {
             },
         },
     },
+
+    "/api/submissions/{id}/analysis": {
+        get: {
+            tags: ["Submissions"],
+            summary:
+                "Get AI analysis for a submission",
+
+            security: [
+                {
+                    BearerAuth: [],
+                },
+            ],
+
+            parameters: [
+                {
+                    name: "id",
+                    in: "path",
+                    required: true,
+                    schema: {
+                        type: "string",
+                    },
+                },
+            ],
+
+            responses: {
+                200: {
+                    description:
+                        "AI analysis fetched successfully",
+                    content: {
+                        "application/json": {
+                            schema: {
+                                type: "object",
+                                properties: {
+                                    success: {
+                                        type: "boolean",
+                                    },
+                                    aiAnalysisStatus: {
+                                        type: "string",
+                                        example: "Completed",
+                                    },
+                                    aiAnalysis: {
+                                        $ref: "#/components/schemas/AIAnalysis",
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                404: {
+                    description:
+                        "Submission not found",
+                },
+            },
+        },
+    },
 };
 
 export default submissionPaths;
